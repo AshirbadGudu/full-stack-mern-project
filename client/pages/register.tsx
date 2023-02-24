@@ -5,9 +5,20 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log({ email, password, confirmPassword });
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      const body = JSON.stringify({ email, password, confirmPassword });
+      const response = await fetch(`http://localhost:1333/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      });
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
