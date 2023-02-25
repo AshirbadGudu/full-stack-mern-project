@@ -16,7 +16,7 @@ mongoose
 
 app.get("/", (_, res) => res.status(200).json({ msg: "Server Running" }));
 
-app.use("api/v1/auth", routes.auth);
+app.use("/api/v1/auth", routes.auth);
 
 app.listen(CONFIG.PORT, () =>
   console.log(`🚀🚀🚀 http://localhost:${CONFIG.PORT} 🚀🚀🚀`)

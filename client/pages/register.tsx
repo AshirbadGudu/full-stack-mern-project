@@ -9,11 +9,14 @@ function Register() {
     try {
       e.preventDefault();
       const body = JSON.stringify({ email, password, confirmPassword });
-      const response = await fetch(`http://localhost:1333/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      });
+      const response = await fetch(
+        `http://localhost:1333/api/v1/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        }
+      );
       const result = await response.json();
       console.log(result);
     } catch (error) {
