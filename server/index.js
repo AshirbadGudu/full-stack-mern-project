@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const { validationResult, check } = require("express-validator");
 const cors = require("cors");
 const app = express();
+const bcrypt = require("bcryptjs");
 const { CONFIG } = require("./config");
 const userModel = require("./models/user.model");
+
 app.use(cors());
 app.use(express.json());
 
@@ -34,20 +36,21 @@ app.post(
       const errors = validationResult(req);
       if (!errors.isEmpty())
         return res.status(400).json({ msg: errors.array(), isSuccess: false });
-      // Extract everything from req body
-      const { email, password, confirmPassword } = req.body;
+      // Extract email & password from req body
+      const { email, password } = req.body;
       // Check the email already exist or not
       let user = await userModel.findOne({ email });
       if (user)
         return res
           .status(400)
           .json({ msg: "User already exists", isSuccess: false });
-      // Create the user and save it inside database
-      user = await new userModel({
-        email,
-        password,
-        confirmPassword,
-      }).save();
+      // Create the user
+      user = new userModel({ email });
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      // Save user inside database
+      await user.save();
       // Send back success message
       return res.json({
         msg: "User registered successfully",
