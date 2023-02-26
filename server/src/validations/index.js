@@ -1,2 +1,5 @@
-const validations = { auth: require("./auth.validations") };
+const validations = {
+  auth: require("./auth.validations"),
+  users: require("./users.validations"),
+};
 module.exports = validations;
