@@ -43,21 +43,10 @@ const auth = {
       // Extract email & password from req body
       const { email, password } = req.body;
       // Check the email already exist or not
-      let user = await userModel.findOne({ email });
-      if (!user)
-        return res.status(400).json({
-          msg: "No user found with this email address",
-          isSuccess: false,
-        });
-      // Compare password
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch)
-        return res
-          .status(400)
-          .json({ msg: "Password does not match", isSuccess: false });
+      const user = await userModel.login(email, password);
       // Create access token with jwt
       const accessToken = jwt.sign(
-        { email, _id: user._id },
+        { email, _id: user._id, role: user.role },
         configs.JWT_SECRET
       );
       // Send back success message
