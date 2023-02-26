@@ -21,10 +21,18 @@ const users = {
   },
   create: async (req, res) => {
     try {
+      const { email, password, role, isVerified } = req.body;
+      const user = await new userModel({
+        email,
+        password,
+        role,
+        isVerified,
+      }).save();
       // Send back success message
       return res.json({
         msg: "Success",
         isSuccess: true,
+        data: { user },
       });
     } catch (error) {
       // If any other error happens handle here
@@ -35,10 +43,18 @@ const users = {
   },
   update: async (req, res) => {
     try {
+      const { email, password, role, isVerified } = req.body;
+      const user = await userModel.findByIdAndUpdate(
+        req.params._id,
+        { email, password, role, isVerified },
+        { new: true } // if we pass the { new: true } option, it returns the updated document instead of the old document
+      );
+      if (!user) return res.status(404).json({ message: "User not found" });
       // Send back success message
       return res.json({
         msg: "Success",
         isSuccess: true,
+        data: { user },
       });
     } catch (error) {
       // If any other error happens handle here
@@ -49,10 +65,13 @@ const users = {
   },
   remove: async (req, res) => {
     try {
+      const user = await userModel.findByIdAndDelete(req.params._id);
+      if (!user) return res.status(404).json({ message: "User not found" });
       // Send back success message
       return res.json({
         msg: "Success",
         isSuccess: true,
+        data: { user },
       });
     } catch (error) {
       // If any other error happens handle here
