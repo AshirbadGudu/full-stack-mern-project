@@ -7,19 +7,22 @@ module.exports = require("express")
   .get("/", controllers.users.get)
   .post(
     "/",
-    validations.users.create,
     middleware.auth,
+    validations.users.create,
+    middleware.validate,
     controllers.users.create
   )
   .put(
     "/:_id",
-    validations.users.update,
     middleware.auth,
+    validations.users.update,
+    middleware.validate,
     controllers.users.update
   )
   .delete(
     "/:_id",
-    validations.users.delete,
     middleware.auth,
+    validations.users.delete,
+    middleware.validate,
     controllers.users.remove
   );
