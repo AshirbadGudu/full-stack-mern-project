@@ -23,6 +23,7 @@ db.connect();
  * Setup the routes
  * */
 app.use("/api/v1/auth", routes.auth);
+app.use("/api/v1/users", routes.users);
 /**
  * Listen to a specific port number
  * */
