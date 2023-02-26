@@ -60,13 +60,16 @@ const auth = {
         return res
           .status(400)
           .json({ msg: "Password does not match", isSuccess: false });
-      // Save user inside database
-      const token = jwt.sign({ email }, configs.JWT_SECRET);
+      // Create access token with jwt
+      const accessToken = jwt.sign(
+        { email, _id: user._id },
+        configs.JWT_SECRET
+      );
       // Send back success message
       return res.json({
         msg: "Login successful",
         isSuccess: true,
-        data: { token, user },
+        data: { accessToken, user },
       });
     } catch (error) {
       // If any other error happens handle here
@@ -74,6 +77,41 @@ const auth = {
         error instanceof Error
           ? error.message
           : "Can't login with these credentials";
+      return res.status(500).json({ msg, isSuccess: false });
+    }
+  },
+  currentUser: async (req, res) => {
+    try {
+      const accessToken = req.header("x-access-token");
+      // Check if the accessToken sent by the user or not
+      if (!accessToken)
+        return res.status(401).json({
+          msg: "Unauthorized, You can't access this data",
+          isSuccess: false,
+        });
+      // Decode the user from the access token
+      const decodedUser = jwt.verify(
+        req.header("x-access-token"),
+        configs.JWT_SECRET
+      );
+      // Get user mongoose id from decoded user
+      const userId = decodedUser._id;
+      // Find user by ID
+      const user = await userModel.findById(userId).select("-password");
+      if (!user)
+        return res.status(400).json({
+          msg: "No user found with this information",
+          isSuccess: false,
+        });
+      res.status(200).json({
+        msg: "User fetched successfully",
+        isSuccess: true,
+        data: { user },
+      });
+    } catch (error) {
+      // If any other error happens handle here
+      const msg =
+        error instanceof Error ? error.message : "Can't get current user data";
       return res.status(500).json({ msg, isSuccess: false });
     }
   },
