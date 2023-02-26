@@ -9,7 +9,7 @@ const app = express();
  * */
 const db = require("./src/db");
 const configs = require("./src/configs");
-const routes = require("./src/routes");
+const { setupRoutes } = require("./src/helpers");
 /**
  * Use required express middleware
  * */
@@ -22,8 +22,7 @@ db.connect();
 /**
  * Setup the routes
  * */
-app.use("/api/v1/auth", routes.auth);
-app.use("/api/v1/users", routes.users);
+setupRoutes(app);
 /**
  * Listen to a specific port number
  * */
