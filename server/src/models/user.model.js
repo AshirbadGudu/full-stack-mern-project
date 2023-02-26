@@ -15,8 +15,10 @@ const UserSchema = new mongoose.Schema(
   { collection: "USERS", timestamps: true }
 );
 
-// hash password before saving to database
 UserSchema.pre("save", async function (next) {
+  // trim the email before saving so that we get rid of extra spaces
+  this.email = this.email.trim();
+  // hash password before saving to database
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
