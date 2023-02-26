@@ -1,5 +1,3 @@
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
 const configs = require("../configs");
@@ -7,10 +5,6 @@ const configs = require("../configs");
 const auth = {
   register: async (req, res) => {
     try {
-      // Check for validation errors
-      const errors = validationResult(req);
-      if (!errors.isEmpty())
-        return res.status(400).json({ msg: errors.array(), isSuccess: false });
       // Extract email & password from req body
       const { email, password } = req.body;
       // Check the email already exist or not
@@ -36,10 +30,6 @@ const auth = {
   },
   login: async (req, res) => {
     try {
-      // Check for validation errors
-      const errors = validationResult(req);
-      if (!errors.isEmpty())
-        return res.status(400).json({ msg: errors.array(), isSuccess: false });
       // Extract email & password from req body
       const { email, password } = req.body;
       // Check the email already exist or not
