@@ -82,27 +82,9 @@ const auth = {
   },
   currentUser: async (req, res) => {
     try {
-      const accessToken = req.header("x-access-token");
-      // Check if the accessToken sent by the user or not
-      if (!accessToken)
-        return res.status(401).json({
-          msg: "Unauthorized, You can't access this data",
-          isSuccess: false,
-        });
-      // Decode the user from the access token
-      const decodedUser = jwt.verify(
-        req.header("x-access-token"),
-        configs.JWT_SECRET
-      );
-      // Get user mongoose id from decoded user
-      const userId = decodedUser._id;
-      // Find user by ID
-      const user = await userModel.findById(userId).select("-password");
-      if (!user)
-        return res.status(400).json({
-          msg: "No user found with this information",
-          isSuccess: false,
-        });
+      // From auth middleware we get the current user information
+      const { user } = req;
+      // Send back success message
       res.status(200).json({
         msg: "User fetched successfully",
         isSuccess: true,
