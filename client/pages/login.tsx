@@ -1,9 +1,11 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { replace } = useRouter();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -15,6 +17,10 @@ function Login() {
       });
       const result = await response.json();
       console.log(result);
+      if (result.isSuccess) {
+        localStorage.setItem("access-token", result.data.accessToken);
+        replace("/");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +58,12 @@ function Login() {
         />
       </div>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center gap-3">
+        <Link href={"/register"}>
+          <button className="bg-blue-100 hover:shadow font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Sign up
+          </button>
+        </Link>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
