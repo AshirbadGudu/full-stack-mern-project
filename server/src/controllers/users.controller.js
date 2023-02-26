@@ -1,14 +1,40 @@
 const userModel = require("../models/user.model");
 
 const users = {
-  get: async (_, res) => {
+  get: async (req, res) => {
     try {
-      const allUsers = await userModel.find({}, "-password -__v");
+      const count = await userModel.countDocuments();
+      const { page = 1, limit = count } = req.query;
+      const allUsers = await userModel
+        .find()
+        .skip((+page - 1) * +limit)
+        .limit(+limit)
+        .select("-password -__v")
+        .lean(); // skips creating the Mongoose document and returns plain JavaScript objects that is more performant
+      const totalPages = Math.ceil(count / limit);
+
+      let prevPage = null;
+      let nextPage = null;
+
+      if (page > 1) {
+        prevPage = `/users?page=${page - 1}&limit=${limit}`;
+      }
+
+      if (page < totalPages) {
+        nextPage = `/users?page=${parseInt(page) + 1}&limit=${limit}`;
+      }
+
       // Send back success message
       return res.json({
         msg: "Success",
         isSuccess: true,
-        data: { users: allUsers },
+        data: {
+          users: allUsers,
+          totalPages,
+          prevPage,
+          nextPage,
+          currentPage: +page,
+        },
       });
     } catch (error) {
       // If any other error happens handle here
