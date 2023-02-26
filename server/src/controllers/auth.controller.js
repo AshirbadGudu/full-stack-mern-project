@@ -19,13 +19,8 @@ const auth = {
         return res
           .status(400)
           .json({ msg: "User already exists", isSuccess: false });
-      // Create the user
-      user = new userModel({ email });
-      // Hash the password
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      // Save user inside database
-      await user.save();
+      // Create the user & save user inside database
+      user = await new userModel({ email, password }).save();
       // Send back success message
       return res.json({
         msg: "User registered successfully",
