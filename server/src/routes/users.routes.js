@@ -5,6 +5,7 @@ const middleware = require("../middleware");
 module.exports = require("express")
   .Router()
   .get("/", controllers.users.get)
+  .get("/:_id", controllers.users.getOne)
   .post(
     "/",
     middleware.auth,

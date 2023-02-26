@@ -1,5 +1,3 @@
-const { validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
 
 const users = {
@@ -11,6 +9,23 @@ const users = {
         msg: "Success",
         isSuccess: true,
         data: { users: allUsers },
+      });
+    } catch (error) {
+      // If any other error happens handle here
+      const msg =
+        error instanceof Error ? error.message : "Internal Server Error";
+      return res.status(500).json({ msg, isSuccess: false });
+    }
+  },
+  getOne: async (req, res) => {
+    try {
+      const user = await userModel.findById(req.params._id, "-password -__v");
+      if (!user) return res.status(404).json({ message: "User not found" });
+      // Send back success message
+      return res.json({
+        msg: "Success",
+        isSuccess: true,
+        data: { user },
       });
     } catch (error) {
       // If any other error happens handle here
