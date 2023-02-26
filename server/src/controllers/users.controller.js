@@ -1,16 +1,16 @@
 const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
-const configs = require("../configs");
 
 const users = {
-  get: async (req, res) => {
+  get: async (_, res) => {
     try {
+      const allUsers = await userModel.find({}, "-password -__v");
       // Send back success message
       return res.json({
         msg: "Success",
         isSuccess: true,
+        data: { users: allUsers },
       });
     } catch (error) {
       // If any other error happens handle here
