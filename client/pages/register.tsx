@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import Swal from "sweetalert2";
 import { handleError } from "../utils";
 
 function Register() {
@@ -20,6 +21,7 @@ function Register() {
       );
       const result = await response.json();
       if (!result.isSuccess) throw new Error(result?.msg);
+      Swal.fire("Success", "Account created Successfully", "success");
     } catch (error) {
       handleError(error);
     }
