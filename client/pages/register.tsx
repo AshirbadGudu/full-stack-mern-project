@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { handleError } from "../utils";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -18,9 +19,9 @@ function Register() {
         }
       );
       const result = await response.json();
-      console.log(result);
+      if (!result.isSuccess) throw new Error(result?.msg);
     } catch (error) {
-      console.log(error);
+      handleError(error);
     }
   };
 

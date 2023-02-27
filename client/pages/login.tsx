@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import { handleError } from "../utils";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -16,13 +17,11 @@ function Login() {
         body,
       });
       const result = await response.json();
-      console.log(result);
-      if (result.isSuccess) {
-        localStorage.setItem("access-token", result.data.accessToken);
-        replace("/");
-      }
+      if (!result.isSuccess) throw new Error(result?.msg);
+      localStorage.setItem("access-token", result.data.accessToken);
+      replace("/");
     } catch (error) {
-      console.log(error);
+      handleError(error);
     }
   };
 
